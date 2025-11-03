@@ -1,4 +1,5 @@
 import chalk from 'chalk'
+import type { DiceRoll } from './types.js'
 
 const log = console.log
 const error = console.error
@@ -12,4 +13,8 @@ const style = {
   response: (text: string) => style.yellow(`\n${text}`),
 }
 
-export { log, error, style }
+const roll = function (sides: DiceRoll): number {
+  return Math.round(Math.random() * sides) + 1
+}
+
+export { log, error, style, roll }

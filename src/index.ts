@@ -16,6 +16,8 @@ const askLoop = async (): Promise<void> => {
   try {
     const userInput = await rl.question(style.prompt('Ask a question:'))
 
+    let message = ''
+
     const { output_text, id } = await ai.responses.create({
       model: 'gpt-5-nano',
       input: userInput,
@@ -23,9 +25,10 @@ const askLoop = async (): Promise<void> => {
       store: true,
     })
 
-    log(style.response(output_text))
-
     previousResponseId = id
+    message = output_text
+
+    log(style.response(message))
 
     await askLoop()
   } catch (err: any) {
