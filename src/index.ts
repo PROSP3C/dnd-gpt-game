@@ -2,7 +2,7 @@ import 'dotenv/config'
 import { error, log, style } from './utils.js'
 import { setup } from './setup.js'
 
-const { client, rl } = setup()
+const { ai, rl } = setup()
 
 rl.on('SIGINT', () => {
   log(style.red('\nGoodbye! <3'))
@@ -14,7 +14,7 @@ const askLoop = async (): Promise<void> => {
   try {
     const userInput = await rl.question(style.prompt('Ask a question:'))
 
-    const { output_text } = await client.responses.create({
+    const { output_text } = await ai.responses.create({
       model: 'gpt-5-nano',
       input: userInput,
     })

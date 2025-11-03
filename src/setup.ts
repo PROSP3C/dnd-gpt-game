@@ -8,7 +8,7 @@ const setup = function (): SetupResponse {
     throw new Error(style.red('OPENAI_API_KEY not found.'))
   }
 
-  const client = new OpenAI({
+  const ai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
   })
 
@@ -17,7 +17,7 @@ const setup = function (): SetupResponse {
     output: process.stdout,
   })
 
-  return { rl, client }
+  return { rl, ai }
 }
 
 export { setup }
