@@ -6,4 +6,9 @@ export interface SetupResponse {
   ai: OpenAI
 }
 
-export type DiceRoll = 4 | 6 | 8 | 10 | 12 | 20
+export type SidedDice = 4 | 6 | 8 | 10 | 12 | 20
+
+export type RollDiceOptions = {
+  withAdvantage?: boolean
+  withDisadvantage?: boolean
+}

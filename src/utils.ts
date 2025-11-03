@@ -1,5 +1,5 @@
 import chalk from 'chalk'
-import type { DiceRoll } from './types.js'
+import type { SidedDice, RollDiceOptions } from './types.js'
 
 const log = console.log
 const error = console.error
@@ -13,8 +13,28 @@ const style = {
   response: (text: string) => style.yellow(`\n${text}`),
 }
 
-const roll = function (sides: DiceRoll): number {
-  return Math.round(Math.random() * sides) + 1
+const rollDice = function (
+  sides: SidedDice,
+  count = 1,
+  options: RollDiceOptions = {},
+): number {
+  const { withAdvantage = false, withDisadvantage = false } = options
+  const rollCount = withAdvantage || withDisadvantage ? 2 : count
+  const rolls: number[] = []
+
+  for (let d = 0; d < rollCount; d++) {
+    rolls.push(Math.floor(Math.random() * sides) + 1)
+  }
+
+  if (withAdvantage) {
+    return Math.max(...rolls)
+  }
+
+  if (withDisadvantage) {
+    return Math.min(...rolls)
+  }
+
+  return rolls.reduce((acc, val) => acc + val, 0)
 }
 
-export { log, error, style, roll }
+export { log, error, style, rollDice }
