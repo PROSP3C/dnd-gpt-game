@@ -15,7 +15,7 @@ const askLoop = async (): Promise<void> => {
     const userInput = await rl.question(style.prompt('Ask a question:'))
 
     const { output_text } = await client.responses.create({
-      model: 'gpt-5-mini',
+      model: 'gpt-5-nano',
       input: userInput,
     })
 
