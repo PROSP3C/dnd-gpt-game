@@ -1,6 +1,7 @@
 import 'dotenv/config'
 import { error, log, style } from './utils.js'
 import { setup } from './setup.js'
+import { Select } from './select-options.js'
 
 const { ai, rl } = setup()
 
@@ -42,6 +43,18 @@ const askLoop = async (): Promise<void> => {
   }
 }
 
-log(style.green('Hello!'))
+console.clear()
 
-await askLoop()
+const MainMenu = new Select({
+  question: 'Welcome!',
+  options: ['NEW GAME', 'QUIT'],
+  answers: ['NEW GAME', 'QUIT'],
+})
+
+const { value } = await MainMenu.start()
+
+if (value === 'NEW GAME') {
+  await askLoop()
+} else {
+  log(style.red('\nGoodbye! <3'))
+}

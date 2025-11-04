@@ -12,3 +12,10 @@ export type RollDiceOptions = {
   withAdvantage?: boolean
   withDisadvantage?: boolean
 }
+
+export enum GameState {
+  InGameMenu = 'InGameMenu',
+  DMsTurn = 'DMsTurn',
+  PlayersTurn = 'PlayersTurn',
+  InInventory = 'InInventory',
+}
