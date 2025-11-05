@@ -10,6 +10,7 @@ const spinner = createSpinner()
 let previousResponseId: string | null = null
 
 const quit = (message?: string) => {
+  setLoadingState(false)
   console.clear()
   log(style.red(message || ''))
   rl.close()
