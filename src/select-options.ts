@@ -113,8 +113,6 @@ export class Select {
       stdin.removeListener('data', this.handler)
     }
 
-    stdin.setRawMode(false)
-    stdin.pause()
     this.showCursor()
     rl.cursorTo(stdout, 0, this.options.length + 1)
 

@@ -14,8 +14,8 @@ export type RollDiceOptions = {
 }
 
 export enum GameState {
-  InGameMenu = 'InGameMenu',
+  GameMenu = 'GameMenu',
   DMsTurn = 'DMsTurn',
   PlayersTurn = 'PlayersTurn',
-  InInventory = 'InInventory',
+  Inventory = 'Inventory',
 }

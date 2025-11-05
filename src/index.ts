@@ -7,10 +7,15 @@ const { ai, rl } = setup()
 
 let previousResponseId: string | null = null
 
-rl.on('SIGINT', () => {
-  log(style.red('\nGoodbye! <3'))
+const quit = (message?: string) => {
+  console.clear()
+  log(style.red(message || ''))
   rl.close()
   process.exit(0)
+}
+
+rl.on('SIGINT', () => {
+  quit('Goodbye! <3')
 })
 
 const askLoop = async (): Promise<void> => {
@@ -19,42 +24,51 @@ const askLoop = async (): Promise<void> => {
 
     let message = ''
 
-    const { output_text, id } = await ai.responses.create({
-      model: 'gpt-5-nano',
-      input: userInput,
-      previous_response_id: previousResponseId,
-      store: true,
-    })
+    try {
+      const { output_text, id } = await ai.responses.create({
+        model: 'gpt-5-nano',
+        input: userInput,
+        previous_response_id: previousResponseId,
+        store: true,
+      })
 
-    previousResponseId = id
-    message = output_text
+      previousResponseId = id
+      message = output_text
+    } catch (err: any) {
+      error(style.red('Problem with responses api:'), err)
+      quit()
+    }
 
     log(style.response(message))
 
     await askLoop()
   } catch (err: any) {
     if (err.name === 'AbortError') {
-      log(style.red('\nSession aborted.'))
+      log(style.red('Session aborted.'))
     } else {
-      error(style.red('\nUnexpected error:'), err)
+      error(style.red('Unexpected error:'), err)
     }
-    rl.close()
-    process.exit(1)
+
+    quit()
   }
 }
 
-console.clear()
+;(async () => {
+  console.clear()
 
-const MainMenu = new Select({
-  question: 'Welcome!',
-  options: ['NEW GAME', 'QUIT'],
-  answers: ['NEW GAME', 'QUIT'],
-})
+  const MainMenu = new Select({
+    question: 'Welcome!',
+    options: ['NEW GAME', 'QUIT'],
+    answers: ['NEW GAME', 'QUIT'],
+  })
 
-const { value } = await MainMenu.start()
+  const { value } = await MainMenu.start()
 
-if (value === 'NEW GAME') {
+  if (!value || value === 'QUIT') {
+    quit('Goodbye! <3')
+  }
+
+  console.clear()
+
   await askLoop()
-} else {
-  log(style.red('\nGoodbye! <3'))
-}
+})()
