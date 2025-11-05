@@ -2,8 +2,10 @@ import 'dotenv/config'
 import { error, log, style } from './utils.js'
 import { setup } from './setup.js'
 import { Select } from './select-options.js'
+import { createSpinner } from './loading-spinner.js'
 
 const { ai, rl } = setup()
+const spinner = createSpinner()
 
 let previousResponseId: string | null = null
 
@@ -12,6 +14,14 @@ const quit = (message?: string) => {
   log(style.red(message || ''))
   rl.close()
   process.exit(0)
+}
+
+const setLoadingState = (isLoading: boolean) => {
+  if (isLoading) {
+    spinner.start()
+  } else {
+    spinner.stop()
+  }
 }
 
 rl.on('SIGINT', () => {
@@ -25,6 +35,8 @@ const askLoop = async (): Promise<void> => {
     let message = ''
 
     try {
+      setLoadingState(true)
+
       const { output_text, id } = await ai.responses.create({
         model: 'gpt-5-nano',
         input: userInput,
@@ -32,13 +44,16 @@ const askLoop = async (): Promise<void> => {
         store: true,
       })
 
+      setLoadingState(false)
+
       previousResponseId = id
-      message = output_text
+      message = `${output_text}\n`
     } catch (err: any) {
       error(style.red('Problem with responses api:'), err)
       quit()
     }
 
+    console.clear()
     log(style.response(message))
 
     await askLoop()
