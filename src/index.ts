@@ -3,6 +3,7 @@ import { error, log, style } from './utils.js'
 import { setup } from './setup.js'
 import { Select } from './select-options.js'
 import { createSpinner } from './loading-spinner.js'
+import { authenticate } from './authentication.js'
 
 const { ai, rl } = setup()
 const spinner = createSpinner()
@@ -72,15 +73,37 @@ const askLoop = async (): Promise<void> => {
 ;(async () => {
   console.clear()
 
-  const MainMenu = new Select({
+  const PreAuthMainMenu = new Select({
     question: 'Welcome!',
+    options: ['LOGIN', 'QUIT'],
+    answers: ['LOGIN', 'QUIT'],
+  })
+
+  const { value: preAuthSelection } = await PreAuthMainMenu.start()
+
+  if (!preAuthSelection || preAuthSelection === 'QUIT') {
+    quit('Goodbye! <3')
+  }
+
+  console.clear()
+  const username = await rl.question(style.prompt('Username:'))
+  console.clear()
+  const password = await rl.question(style.prompt('Password:'))
+  console.clear()
+
+  const {
+    user: { name },
+  } = await authenticate(username, password)
+
+  const PostAuthMainMenu = new Select({
+    question: `Welcome Back, ${name}.`,
     options: ['NEW GAME', 'QUIT'],
     answers: ['NEW GAME', 'QUIT'],
   })
 
-  const { value } = await MainMenu.start()
+  const { value: postAuthSelection } = await PostAuthMainMenu.start()
 
-  if (!value || value === 'QUIT') {
+  if (!postAuthSelection || postAuthSelection === 'QUIT') {
     quit('Goodbye! <3')
   }
 
