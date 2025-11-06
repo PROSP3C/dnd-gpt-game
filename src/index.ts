@@ -93,6 +93,8 @@ const askLoop = async (): Promise<void> => {
     user: { name },
   } = await authenticate(username, password)
 
+  clear()
+
   const PostAuthMainMenu = new Select({
     question: `Welcome Back, ${name}.`,
     options: ['NEW GAME', 'QUIT'],
