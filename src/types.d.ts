@@ -4,6 +4,7 @@ import * as readline from 'node:readline/promises'
 export interface SetupResponse {
   rl: readline.Interface
   ai: OpenAI
+  setLoadingState: (isLoading: boolean) => void
 }
 
 export type SidedDice = 4 | 6 | 8 | 10 | 12 | 20

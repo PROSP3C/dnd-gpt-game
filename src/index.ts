@@ -2,11 +2,9 @@ import 'dotenv/config'
 import { error, log, style } from './utils.js'
 import { setup } from './setup.js'
 import { Select } from './select-options.js'
-import { createSpinner } from './loading-spinner.js'
 import { authenticate } from './authentication.js'
 
-const { ai, rl } = setup()
-const spinner = createSpinner()
+const { ai, rl, setLoadingState } = setup()
 
 let previousResponseId: string | null = null
 
@@ -16,14 +14,6 @@ const quit = (message?: string) => {
   log(style.red(message || ''))
   rl.close()
   process.exit(0)
-}
-
-const setLoadingState = (isLoading: boolean) => {
-  if (isLoading) {
-    spinner.start()
-  } else {
-    spinner.stop()
-  }
 }
 
 const createResponse = async (input: string) => {

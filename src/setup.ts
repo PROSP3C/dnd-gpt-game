@@ -2,6 +2,7 @@ import OpenAI from 'openai'
 import * as readline from 'node:readline/promises'
 import type { SetupResponse } from './types.js'
 import { style } from './utils.js'
+import { createSpinner } from './loading-spinner.js'
 
 const setup = function (): SetupResponse {
   if (!process.env.OPENAI_API_KEY) {
@@ -17,7 +18,17 @@ const setup = function (): SetupResponse {
     output: process.stdout,
   })
 
-  return { rl, ai }
+  const spinner = createSpinner()
+
+  const setLoadingState = (isLoading: boolean) => {
+    if (isLoading) {
+      spinner.start()
+    } else {
+      spinner.stop()
+    }
+  }
+
+  return { rl, ai, setLoadingState }
 }
 
 export { setup }
