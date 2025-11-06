@@ -26,6 +26,31 @@ const setLoadingState = (isLoading: boolean) => {
   }
 }
 
+const createResponse = async (input: string) => {
+  let response = ''
+
+  try {
+    setLoadingState(false)
+
+    const { output_text, id } = await ai.responses.create({
+      model: 'gpt-5-nano',
+      input,
+      previous_response_id: previousResponseId,
+      store: true,
+    })
+
+    response = output_text
+    previousResponseId = id
+
+    setLoadingState(false)
+  } catch (err: any) {
+    error(style.red('Problem with responses api:'), err)
+    quit()
+  }
+
+  return { response }
+}
+
 rl.on('SIGINT', () => {
   quit('Goodbye! <3')
 })
@@ -34,29 +59,10 @@ const askLoop = async (): Promise<void> => {
   try {
     const userInput = await rl.question(style.prompt('Ask a question:'))
 
-    let message = ''
-
-    try {
-      setLoadingState(true)
-
-      const { output_text, id } = await ai.responses.create({
-        model: 'gpt-5-nano',
-        input: userInput,
-        previous_response_id: previousResponseId,
-        store: true,
-      })
-
-      setLoadingState(false)
-
-      previousResponseId = id
-      message = `${output_text}\n`
-    } catch (err: any) {
-      error(style.red('Problem with responses api:'), err)
-      quit()
-    }
+    const { response } = await createResponse(userInput)
 
     console.clear()
-    log(style.response(message))
+    log(style.response(response))
 
     await askLoop()
   } catch (err: any) {
@@ -106,8 +112,6 @@ const askLoop = async (): Promise<void> => {
   if (!postAuthSelection || postAuthSelection === 'QUIT') {
     quit('Goodbye! <3')
   }
-
-  console.clear()
 
   await askLoop()
 })()

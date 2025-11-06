@@ -14,6 +14,7 @@ export type RollDiceOptions = {
 }
 
 export enum GameState {
+  PreAuth = 'PreAuth',
   GameMenu = 'GameMenu',
   DMsTurn = 'DMsTurn',
   PlayersTurn = 'PlayersTurn',
