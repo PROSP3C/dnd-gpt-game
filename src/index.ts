@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import { error, log, style } from './utils.js'
+import { error, log, clear, style } from './utils.js'
 import { setup } from './setup.js'
 import { Select } from './select-options.js'
 import { authenticate } from './authentication.js'
@@ -8,15 +8,23 @@ const { ai, rl, setLoadingState } = setup()
 
 let previousResponseId: string | null = null
 
-const quit = (message?: string) => {
+const quit = (message: string, err?: any) => {
   setLoadingState(false)
-  console.clear()
-  log(style.red(message || ''))
+  clear()
+
+  if (err) {
+    error(style.red(message), err)
+  } else {
+    log(style.red(message))
+  }
+
   rl.close()
   process.exit(0)
 }
 
 const getUserInput = async (question: string) => {
+  clear()
+
   return await rl.question(style.prompt(question))
 }
 
@@ -24,6 +32,7 @@ const createResponse = async (input: string) => {
   let response = ''
 
   try {
+    clear()
     setLoadingState(false)
 
     const { output_text, id } = await ai.responses.create({
@@ -37,9 +46,11 @@ const createResponse = async (input: string) => {
     previousResponseId = id
 
     setLoadingState(false)
+
+    clear()
+    log(style.response(response))
   } catch (err: any) {
-    error(style.red('Problem with responses api:'), err)
-    quit()
+    quit('Problem with responses api:', err)
   }
 
   return { response }
@@ -52,25 +63,16 @@ rl.on('SIGINT', () => {
 const askLoop = async (): Promise<void> => {
   try {
     const userInput = await getUserInput('Ask a question:')
-    const { response } = await createResponse(userInput)
-
-    console.clear()
-    log(style.response(response))
+    await createResponse(userInput)
 
     await askLoop()
   } catch (err: any) {
-    if (err.name === 'AbortError') {
-      log(style.red('Session aborted.'))
-    } else {
-      error(style.red('Unexpected error:'), err)
-    }
-
-    quit()
+    quit('Unexpected error:', err)
   }
 }
 
 ;(async () => {
-  console.clear()
+  clear()
 
   const PreAuthMainMenu = new Select({
     question: 'Welcome!',
@@ -84,11 +86,8 @@ const askLoop = async (): Promise<void> => {
     quit('Goodbye! <3')
   }
 
-  console.clear()
   const username = await getUserInput('Username:')
-  console.clear()
   const password = await getUserInput('Password:')
-  console.clear()
 
   const {
     user: { name },

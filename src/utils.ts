@@ -3,6 +3,7 @@ import type { SidedDice, RollDiceOptions } from './types.js'
 
 const log = console.log
 const error = console.error
+const clear = console.clear
 
 const style = {
   blue: (text: string) => chalk.blue(text),
@@ -37,4 +38,4 @@ const rollDice = function (
   return rolls.reduce((acc, val) => acc + val, 0)
 }
 
-export { log, error, style, rollDice }
+export { log, error, clear, style, rollDice }
