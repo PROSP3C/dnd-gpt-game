@@ -16,6 +16,10 @@ const quit = (message?: string) => {
   process.exit(0)
 }
 
+const getUserInput = async (question: string) => {
+  return await rl.question(style.prompt(question))
+}
+
 const createResponse = async (input: string) => {
   let response = ''
 
@@ -47,8 +51,7 @@ rl.on('SIGINT', () => {
 
 const askLoop = async (): Promise<void> => {
   try {
-    const userInput = await rl.question(style.prompt('Ask a question:'))
-
+    const userInput = await getUserInput('Ask a question:')
     const { response } = await createResponse(userInput)
 
     console.clear()
@@ -82,9 +85,9 @@ const askLoop = async (): Promise<void> => {
   }
 
   console.clear()
-  const username = await rl.question(style.prompt('Username:'))
+  const username = await getUserInput('Username:')
   console.clear()
-  const password = await rl.question(style.prompt('Password:'))
+  const password = await getUserInput('Password:')
   console.clear()
 
   const {
