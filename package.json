@@ -2,14 +2,17 @@
   "author": "Declan Possnett",
   "type": "module",
   "scripts": {
-    "start": "rm -rf dist && tsc && node dist/index.js"
+    "dev": "rm -rf dist && tsc-watch --onSuccess \"node --env-file=.env ./dist/index.js\"",
+    "start": "rm -rf dist && tsc && node --env-file=.env dist/index.js"
   },
   "dependencies": {
+    "@inquirer/prompts": "^7.9.0",
     "chalk": "^5.6.2",
-    "dotenv": "^17.2.3",
+    "figlet": "^1.9.3",
     "openai": "^6.7.0"
   },
   "devDependencies": {
-    "@types/node": "^24.10.0"
+    "@types/node": "^24.10.0",
+    "tsc-watch": "^7.2.0"
   }
 }

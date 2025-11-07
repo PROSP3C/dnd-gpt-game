@@ -1,8 +1,9 @@
-import 'dotenv/config'
 import { error, log, clear, style } from './utils.js'
 import { setup } from './setup.js'
 import { Select } from './select-options.js'
 import { authenticate } from './authentication.js'
+import figlet from 'figlet'
+import { select } from '@inquirer/prompts'
 
 const { ai, rl, setLoadingState } = setup()
 
@@ -25,7 +26,7 @@ const quit = (message: string, err?: any) => {
 const getUserInput = async (question: string) => {
   clear()
 
-  return await rl.question(style.prompt(question))
+  return rl.question(style.prompt(question))
 }
 
 const createResponse = async (input: string) => {
@@ -74,13 +75,23 @@ const askLoop = async (): Promise<void> => {
 ;(async () => {
   clear()
 
-  const PreAuthMainMenu = new Select({
-    question: 'Welcome!',
-    options: ['LOGIN', 'QUIT'],
-    answers: ['LOGIN', 'QUIT'],
-  })
+  const titleText = await figlet.text('DND-GPT', { font: 'Big' })
 
-  const { value: preAuthSelection } = await PreAuthMainMenu.start()
+  log(style.green(titleText))
+
+  const preAuthSelection = await select({
+    message: 'Welcome!',
+    choices: [
+      {
+        name: 'Login',
+        value: 'LOGIN',
+      },
+      {
+        name: 'Quit',
+        value: 'QUIT',
+      },
+    ],
+  })
 
   if (!preAuthSelection || preAuthSelection === 'QUIT') {
     quit('Goodbye! <3')

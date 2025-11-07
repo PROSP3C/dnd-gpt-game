@@ -38,4 +38,8 @@ const rollDice = function (
   return rolls.reduce((acc, val) => acc + val, 0)
 }
 
-export { log, error, clear, style, rollDice }
+const delay = async (milliseconds: number) => {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds))
+}
+
+export { log, error, clear, style, delay, rollDice }
