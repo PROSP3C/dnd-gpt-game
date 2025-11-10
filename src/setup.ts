@@ -3,8 +3,9 @@ import * as readline from 'node:readline/promises'
 import type { SetupResponse } from './types.js'
 import { style } from './utils.js'
 import { createSpinner } from './loading-spinner.js'
+import { SaveManager } from './save-manager.js'
 
-const setup = function (): SetupResponse {
+const setup = async function (): Promise<SetupResponse> {
   if (!process.env.OPENAI_API_KEY) {
     throw new Error(style.red('OPENAI_API_KEY not found.'))
   }
@@ -27,6 +28,10 @@ const setup = function (): SetupResponse {
       spinner.stop()
     }
   }
+
+  const sm = new SaveManager()
+
+  await sm.initialize()
 
   return { rl, ai, setLoadingState }
 }

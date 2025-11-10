@@ -3,9 +3,9 @@ import { setup } from './setup.js'
 import { Select } from './select-options.js'
 import { authenticate } from './authentication.js'
 import figlet from 'figlet'
-import { select } from '@inquirer/prompts'
+import { select, input, password } from '@inquirer/prompts'
 
-const { ai, rl, setLoadingState } = setup()
+const { ai, rl, setLoadingState } = await setup()
 
 let previousResponseId: string | null = null
 
@@ -23,10 +23,10 @@ const quit = (message: string, err?: any) => {
   process.exit(0)
 }
 
-const getUserInput = async (question: string) => {
+const getUserInput = async (message: string, isPassword = false) => {
   clear()
 
-  return rl.question(style.prompt(question))
+  return isPassword ? await password({ message }) : await input({ message })
 }
 
 const createResponse = async (input: string) => {
@@ -80,7 +80,7 @@ const askLoop = async (): Promise<void> => {
   log(style.green(titleText))
 
   const preAuthSelection = await select({
-    message: 'Welcome!',
+    message: 'Please Login To Continue',
     choices: [
       {
         name: 'Login',
@@ -98,7 +98,7 @@ const askLoop = async (): Promise<void> => {
   }
 
   const username = await getUserInput('Username:')
-  const password = await getUserInput('Password:')
+  const password = await getUserInput('Password:', true)
 
   const {
     user: { name },
