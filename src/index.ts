@@ -20,7 +20,7 @@ const quit = (message: string, err?: any) => {
   }
 
   rl.close()
-  process.exit(0)
+  setImmediate(process.exit(0))
 }
 
 const getUserInput = async (message: string, isPassword = false) => {
@@ -57,7 +57,7 @@ const createResponse = async (input: string) => {
   return { response }
 }
 
-rl.on('SIGINT', () => {
+process.on('SIGINT', () => {
   quit('Goodbye! <3')
 })
 

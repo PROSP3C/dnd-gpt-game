@@ -4,30 +4,35 @@ export class SaveManager {
   private readonly filepath = './save.json'
   private data: any
 
-  async initialize() {
+  async initialize(): Promise<void> {
     try {
       fs.existsSync(this.filepath)
     } catch (error) {
-      fs.promises.writeFile(this.filepath, JSON.stringify({}))
+      fs.promises.writeFile(
+        this.filepath,
+        JSON.stringify({
+          characters: [],
+        }),
+      )
     }
   }
 
-  async load() {
+  async load(): Promise<any> {
     try {
       const rawData = await fs.promises.readFile(this.filepath)
       const jsonData = rawData.toJSON()
 
-      console.log(jsonData)
-
       this.data = jsonData
+
+      return this.data
     } catch (error) {
       console.error('Error whilst loading:', error)
     }
   }
 
-  async save() {
+  async save(data: any): Promise<void> {
     try {
-      await fs.promises.writeFile(this.filepath, JSON.stringify(this.data))
+      await fs.promises.writeFile(this.filepath, JSON.stringify(data))
     } catch (error) {
       console.error('Error whilst saving:', error)
     }

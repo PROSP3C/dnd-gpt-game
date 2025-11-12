@@ -30,7 +30,6 @@ const setup = async function (): Promise<SetupResponse> {
   }
 
   const sm = new SaveManager()
-
   await sm.initialize()
 
   return { rl, ai, setLoadingState }
