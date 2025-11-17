@@ -2,7 +2,7 @@ import * as fs from 'node:fs'
 
 export class SaveManager {
   private readonly filepath = './save.json'
-  private data: any
+  private data = {}
 
   async initialize(): Promise<void> {
     try {
@@ -17,14 +17,9 @@ export class SaveManager {
     }
   }
 
-  async load(): Promise<any> {
+  async load(): Promise<void> {
     try {
-      const rawData = await fs.promises.readFile(this.filepath)
-      const jsonData = rawData.toJSON()
-
-      this.data = jsonData
-
-      return this.data
+      this.data = (await fs.promises.readFile(this.filepath)).toJSON()
     } catch (error) {
       console.error('Error whilst loading:', error)
     }
@@ -32,9 +27,13 @@ export class SaveManager {
 
   async save(data: any): Promise<void> {
     try {
-      await fs.promises.writeFile(this.filepath, JSON.stringify(data))
+      await fs.promises.writeFile(this.filepath, data)
     } catch (error) {
       console.error('Error whilst saving:', error)
     }
+  }
+
+  getLoadedData() {
+    return this.data
   }
 }
